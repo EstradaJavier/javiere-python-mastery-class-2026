@@ -1,0 +1,3 @@
+## Activate the venv (do this every time you work in the project):
+
+source venv/bin/activate
