@@ -1,6 +1,6 @@
 <div align="center">
 
-# Javiere Python Mastery Class 2026 🐍✨
+# Javier's Python Mastery Class 2026 🐍✨
 
 **My structured, no-excuses journey to becoming an excellent Python developer in 2026**
 
