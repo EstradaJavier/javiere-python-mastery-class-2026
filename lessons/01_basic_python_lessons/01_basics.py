@@ -102,6 +102,9 @@ from datetime import date, datetime
 #
 # HOW TO READ THIS LINE:
 #     print(f"Age: {age} (type: {type(age)})")
+#     print(f"Age: {age} (type: {type age)}.format(age, type(age))")
+
+# - This line uses an f-string to print the age and its data type in one line.
 #
 # BREAKDOWN:
 # - print(...) is a built-in Python function that displays output on the screen.
@@ -304,6 +307,7 @@ def display_profile(
     print(f"Name: {name} (type: {type(name)})")
     print(f"Date of birth: {dob} (type: {type(dob)})")
     print(f"Age: {age} (type: {type(age)})")
+    print("Age: {} (type: {})".format(age, type(age)))
     print(f"Height: {height_feet}'{height_inches}\" / {height_meters} m")
     print(f"Eye color: {eye_color} (type: {type(eye_color)})")
     print(f"Blood type: {blood_type} (type: {type(blood_type)})")
