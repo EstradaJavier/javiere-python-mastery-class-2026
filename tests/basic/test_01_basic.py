@@ -1,97 +1,108 @@
-# tests/test_fizzbuzz.py
-# Unit tests for the fizzbuzz_result() function
-# Uses pytest — run with the green play button or the terminal
+"""
+Automated tests for lessons/basic/01_basic.py (Lesson 1).
 
-import sys
-import os
+This module focuses on return-value behavior that is stable over time and easy
+for beginners to reason about.
+"""
 
-# This line helps Python find your lessons folder
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lessons', 'additional_lessons'))
+from datetime import date
+import importlib.util
+from pathlib import Path
 
-from fizzbuzz import fizzbuzz_result
-
-
-# ─────────────────────────────────────────────
-# SCENARIO GROUP 1: FizzBuzz (divisible by both 3 AND 5)
-# ─────────────────────────────────────────────
-
-def test_fizzbuzz_at_15():
-    """15 is divisible by both 3 and 5 → should return 'FizzBuzz'"""
-    assert fizzbuzz_result(15) == "FizzBuzz"
-
-def test_fizzbuzz_at_30():
-    """30 is divisible by both 3 and 5 → should return 'FizzBuzz'"""
-    assert fizzbuzz_result(30) == "FizzBuzz"
-
-def test_fizzbuzz_at_45():
-    """45 is divisible by both 3 and 5 → should return 'FizzBuzz'"""
-    assert fizzbuzz_result(45) == "FizzBuzz"
+import pytest
 
 
-# ─────────────────────────────────────────────
-# SCENARIO GROUP 2: Fizz (divisible by 3, NOT 5)
-# ─────────────────────────────────────────────
-
-def test_fizz_at_3():
-    """3 is divisible by 3 → should return 'Fizz'"""
-    assert fizzbuzz_result(3) == "Fizz"
-
-def test_fizz_at_6():
-    """6 is divisible by 3 → should return 'Fizz'"""
-    assert fizzbuzz_result(6) == "Fizz"
-
-def test_fizz_at_9():
-    """9 is divisible by 3 → should return 'Fizz'"""
-    assert fizzbuzz_result(9) == "Fizz"
+LESSON_PATH = Path("lessons/basic/01_basic.py")
 
 
-# ─────────────────────────────────────────────
-# SCENARIO GROUP 3: Buzz (divisible by 5, NOT 3)
-# ─────────────────────────────────────────────
-
-def test_buzz_at_5():
-    """5 is divisible by 5 → should return 'Buzz'"""
-    assert fizzbuzz_result(5) == "Buzz"
-
-def test_buzz_at_10():
-    """10 is divisible by 5 → should return 'Buzz'"""
-    assert fizzbuzz_result(10) == "Buzz"
-
-def test_buzz_at_25():
-    """25 is divisible by 5 → should return 'Buzz'"""
-    assert fizzbuzz_result(25) == "Buzz"
+def _load_module(module_path: str):
+    """Dynamically load the lesson module by file path."""
+    path = Path(module_path)
+    spec = importlib.util.spec_from_file_location("lesson_01_basic", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 
-# ─────────────────────────────────────────────
-# SCENARIO GROUP 4: Regular numbers (no Fizz or Buzz)
-# ─────────────────────────────────────────────
-
-def test_regular_number_1():
-    """1 is not divisible by 3 or 5 → should return '1' as a string"""
-    assert fizzbuzz_result(1) == "1"
-
-def test_regular_number_7():
-    """7 is not divisible by 3 or 5 → should return '7' as a string"""
-    assert fizzbuzz_result(7) == "7"
-
-def test_regular_number_11():
-    """11 is not divisible by 3 or 5 → should return '11' as a string"""
-    assert fizzbuzz_result(11) == "11"
+@pytest.mark.skipif(
+    not LESSON_PATH.exists(),
+    reason="Lesson file not found. Check LESSON_PATH in test_01_basic.py.",
+)
+def test_calculate_age_from_dob_returns_expected_years():
+    """Age should be an integer in a valid range."""
+    lesson = _load_module(str(LESSON_PATH))
+    age = lesson.calculate_age_from_dob(date(2000, 1, 1))
+    assert isinstance(age, int), "Age should be returned as an integer."
+    assert age >= 0, "Age should not be negative for a valid birth date."
 
 
-# ─────────────────────────────────────────────
-# SCENARIO GROUP 5: Edge Cases
-# ─────────────────────────────────────────────
+@pytest.mark.skipif(
+    not LESSON_PATH.exists(),
+    reason="Lesson file not found. Check LESSON_PATH in test_01_basic.py.",
+)
+def test_calculate_age_from_dob_handles_pre_birthday_case():
+    """Birthday-not-yet-occurred should be handled correctly."""
+    lesson = _load_module(str(LESSON_PATH))
+    dob = date(2000, 12, 31)
+    today = date.today()
+    age = lesson.calculate_age_from_dob(dob)
+    expected_age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+    assert age == expected_age, (
+        "Age should correctly account for whether the birthday has occurred yet this year."
+    )
 
-def test_edge_case_number_1():
-    """The minimum valid input (1) should return '1'"""
-    assert fizzbuzz_result(1) == "1"
 
-def test_edge_case_100():
-    """100 is divisible by 5 but NOT 3 → should return 'Buzz'"""
-    assert fizzbuzz_result(100) == "Buzz"
+@pytest.mark.skipif(
+    not LESSON_PATH.exists(),
+    reason="Lesson file not found. Check LESSON_PATH in test_01_basic.py.",
+)
+def test_create_profile_returns_documented_tuple_shape():
+    """create_profile(False) returns a 10-item tuple."""
+    lesson = _load_module(str(LESSON_PATH))
+    profile = lesson.create_profile(False)
+    assert isinstance(profile, tuple), "Profile should be returned as a tuple."
+    assert len(profile) == 10, "Profile tuple should contain exactly 10 values."
 
-def test_return_type_is_always_string():
-    """fizzbuzz_result should always return a string, never an int"""
-    result = fizzbuzz_result(7)
-    assert isinstance(result, str), f"Expected str, got {type(result)}"
+
+@pytest.mark.skipif(
+    not LESSON_PATH.exists(),
+    reason="Lesson file not found. Check LESSON_PATH in test_01_basic.py.",
+)
+def test_create_profile_returns_expected_height_meters():
+    """Height in meters should equal the documented value."""
+    lesson = _load_module(str(LESSON_PATH))
+    profile = lesson.create_profile(False)
+    height_meters = profile[4]
+    assert isinstance(height_meters, float), "Height in meters should be a float."
+    assert height_meters == 1.78, (
+        'Height in meters should be rounded to 1.78 for a 5\'10" profile.'
+    )
+
+
+@pytest.mark.skipif(
+    not LESSON_PATH.exists(),
+    reason="Lesson file not found. Check LESSON_PATH in test_01_basic.py.",
+)
+@pytest.mark.parametrize(
+    "age,height_meters,expected_retirement,expected_height_feet",
+    [
+        (63, 1.78, 2, 5.84),
+        (40, 1.78, 25, 5.84),
+    ],
+)
+def test_run_operations_returns_expected_values(
+        age,
+        height_meters,
+        expected_retirement,
+        expected_height_feet,
+):
+    """run_operations() returns correct numeric results."""
+    lesson = _load_module(str(LESSON_PATH))
+    years_to_retirement, height_feet_decimal = lesson.run_operations(age, height_meters)
+    assert years_to_retirement == expected_retirement, (
+        "Retirement calculation did not match the lesson formula."
+    )
+    assert height_feet_decimal == expected_height_feet, (
+        "Height in decimal feet should match the rounded conversion."
+    )
